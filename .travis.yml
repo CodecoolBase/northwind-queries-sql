@@ -1,0 +1,23 @@
+language: generic
+
+sudo: true
+
+services:
+  - postgresql
+
+before_script:
+  - curl -o northwind.sql https://raw.githubusercontent.com/pthom/northwind_psql/master/northwind.sql
+  - psql -U postgres -c "CREATE DATABASE northwind ENCODING 'UTF8' LC_COLLATE = 'C' LC_CTYPE = 'C' TEMPLATE template0;"
+  - psql -U postgres -f northwind.sql -o /dev/null northwind
+  - psql -V
+  - psql -U postgres -c 'SELECT version();'
+  - psql -U postgres -l
+  - chmod +x etc/test.sh
+
+jobs:
+  include:
+    - script: ./etc/test.sh 1
+    - script: ./etc/test.sh 2
+    - script: ./etc/test.sh 3
+    - script: ./etc/test.sh 4
+    - script: ./etc/test.sh 5
